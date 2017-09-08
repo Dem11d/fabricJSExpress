@@ -1,0 +1,23 @@
+{
+  "name": "wheelengine",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dem11d",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.15.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dem11d/nodejs_express_server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dem11d/nodejs_express_server/issues"
+  },
+  "homepage": "https://github.com/Dem11d/nodejs_express_server#readme",
+  "description": ""
+}

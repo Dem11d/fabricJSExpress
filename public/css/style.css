@@ -1,0 +1,48 @@
+/* oxygen-regular - latin */
+@font-face {
+  font-family: 'Oxygen';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/oxygen-v6-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Oxygen Regular'), local('Oxygen-Regular'),
+       url('../fonts/oxygen-v6-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/oxygen-v6-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/oxygen-v6-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/oxygen-v6-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/oxygen-v6-latin-regular.svg#Oxygen') format('svg'); /* Legacy iOS */
+}
+body{
+  font-family: Oxygen;
+}
+
+.sidebar{
+  display: flex;
+  flex-direction: row;
+  width: 100px;
+  margin: 0 auto;
+  /*float: right;*/
+}
+#item-list{
+  padding: 0;
+
+}
+.stage{
+  width: 1000px;
+  /*float:letf;*/
+  overflow: hidden;
+  margin: 0 auto;
+
+}
+.main{
+  display: flex;
+}
+.sidebar li{
+  text-align: center;
+  padding: 5px;
+  margin:5px;
+  list-style-type: none;
+  height: 30px;
+  background-color: grey;
+  border-radius: 3px;
+
+}

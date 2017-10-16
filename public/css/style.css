@@ -18,7 +18,7 @@ body{
 .sidebar{
   display: flex;
   flex-direction: row;
-  width: 100px;
+  width: 120px;
   margin: 0 auto;
   /*float: right;*/
 }
@@ -27,9 +27,9 @@ body{
 
 }
 .stage{
-  width: 1000px;
+  width: 900px;
   /*float:letf;*/
-  overflow: hidden;
+  /*overflow: hidden;*/
   margin: 0 auto;
 
 }
@@ -38,11 +38,15 @@ body{
 }
 .sidebar li{
   text-align: center;
-  padding: 5px;
+  padding: 5px 50px;
   margin:5px;
   list-style-type: none;
   height: 30px;
   background-color: grey;
   border-radius: 3px;
 
+}
+
+#canvas, .upper-canvas{
+  border: 3px solid lightgrey;
 }

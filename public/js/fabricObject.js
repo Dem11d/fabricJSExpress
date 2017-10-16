@@ -1,369 +1,779 @@
-function FabricObject(canvas_id) {
-  let own = this;
+FabricObject = function (canvas_id, obj = null) {
+    const width = 1000;
+    const height = 1000;
 
-  let images = [];
-  let gradient;
-  let texts = [];
-  let elements={};
-
-  let example_object = {
-    _id: "59b01e2694c5b02eb893fd24",
-    snapshots: {
-      Cover: "https://knmiddle-cached-images.s3.amazonaws.com/20a100ba-27cd-4239-b43d-b1486adc4eb8.jpg"
-    },
-    Dom: {
-      p: {
-        color: {
-          color: "hsl(302, 100%, 50%)"
-        }
-      },
-      images: [{
-          keywords: "kodak5222 kodak leica monochrome blacknwhite bnw snapshot snap streetphotography streetshot street playground night basketball joe",
-          search_key: "basketball",
-          provider: "flickr",
-          src: "https://farm5.staticflickr.com/4400/35967625173_18d5fa23f0_b.jpg",
-          author: "Joe Streetsnap",
-          price: "0",
-          author_id: "91424037@N02",
-          image_id: "35967625173",
-          title: "",
-          search_type: "regular"
-        },
-        {
-          keywords: "athlete,athletic,background,ball,basket,basketball,body,camera,competition,court,direction,energy,equipment,event,exercise,female,finger,fitness,fun,game,hand,healthy,hold,holding,hoop,lifestyle,male,man,orange,palm,person,play,player,portrait,power,professional,recreation,round,score,single,speed,sport,sportsman,standing,street,team,top,training,white,young",
-          search_key: "basketball",
-          provider: "bigstock",
-          src: "http://static9.bigstockphoto.com/thumbs/9/9/1/large2/199146529.jpg",
-          author: "Evgenyjs1",
-          price: "5",
-          image_id: "199146529",
-          title: "",
-          search_type: "regular"
-        },
-        {
-          keywords: "arrow,attack,background,ball,basketball,basketball player,basketball texture,blackboard,blackboard background,board,board games,card,chalk,chalkboard,chalk board,chalkboard background,closeup,coach,competition,concept,diagram,drawing,education,field,frame,game,gate,goal,green,green field,idea,illustration,instruction,line,lines background,organization,pitch,plan,play,player,playing cards,scheme,sport,sports background,sports balls,strategy,tactic,tactical,texture,training,wooden,wooden background,zone",
-          search_key: "basketball",
-          provider: "bigstock",
-          src: "http://static3.bigstockphoto.com/thumbs/1/1/8/large2/81111083.jpg",
-          author: "Yastremska",
-          price: "5",
-          image_id: "81111083",
-          title: "Scheme basketball game on blackboard background",
-          search_type: "regular"
-        }
-      ],
-      h1: {
-        color: {
-          color: "hsl(181, 100%, 50%)"
-        },
-        font: {
-          weight: "500",
-          style: "normal",
-          id: "585829173d53a3643708ec61",
-          family: "Exo",
-          category: "sans-serif"
-        }
-      },
-      cl1: {
-        color: {
-          color: "hsl(326, 100%, 50%)"
-        }
-      },
-      global: {
-        color: {
-          color: "hsl(216, 100%, 50%)"
-        },
-        font: {
-          weight: "700",
-          style: "normal",
-          id: "585829173d53a3643708ebcf",
-          family: "Cormorant Garamond",
-          category: "serif"
-        }
-      },
-      h2: {
-        color: {
-          color: "hsl(278, 100%, 50%)"
-        },
-        font: {
-          weight: "400",
-          style: "normal",
-          id: "585829173d53a3643708edd8",
-          family: "Life Savers",
-          category: "display"
-        }
-      },
-      h3: {
-        color: {
-          color: "hsl(290, 100%, 50%)"
-        }
-      },
-      btn: {
-        color: {
-          color: "hsl(314, 100%, 50%)"
-        }
-      }
-    },
-    domain: {
-      provider_: "Sedo",
-      price: "688",
-      name: "onbasketball.com"
-    },
-    product_id: "zxdeeWtMv8oRpnFyq",
-    gradient: {
-      color: [
-        [
-          0.38369137048721313,
-          0.6116745471954346,
-          0.4949660301208496
-        ],
-        [
-          0.4871100187301636,
-          0.7402473092079163,
-          0.40056905150413513
-        ],
-        [
-          0.3713681995868683,
-          0.11880893260240555,
-          0.9443817734718323
-        ],
-        [
-          0.2997022867202759,
-          0.6879955530166626,
-          0.7114823460578918
-        ]
-      ],
-      kind: "0",
-      angle: 1.0697739186484327,
-      fraction: [
-        "0",
-        0.25,
-        0.5,
-        0.75
-      ]
-    },
-    style_id: "zWHagdGCwiXKXYojv",
-    seqId: "3",
-    colors: {
-      harmony: [
-        "hsl(302, 100%, 50%)",
-        "hsl(278, 100%, 50%)",
-        "hsl(290, 100%, 50%)",
-        "hsl(302, 100%, 50%)",
-        "hsl(314, 100%, 50%)",
-        "hsl(326, 100%, 50%)"
-      ],
-      harmonyType: "analogous"
-    },
-    sid: "2c29vXodX7TLeud6C",
-    timestamp: "1504714278694",
-    fontSettings: {},
-    taste_id: "3hwdJgBNEGp8cqExT"
-  };
-
-  let canvas = new fabric.Canvas(canvas_id);
+    let own = this;
+    this.data = obj;
 
 
-  this.toSvg = function() {
-    return canvas.toSVG();
-  }
-  this.testAdd = function() {
-    canvas.add(
-      new fabric.Rect({
-        width: 100,
-        height: 200,
-        left: 300,
-        top: 100,
-        fill: 'green',
-        angle: 45
-      }));
+    let images = [];
+    let gradient;
+    let texts = {};
+    let elements = {};
+    let stackTexts = [];
+    let canvas;
+    let fonts;
 
-    canvas.add(new fabric.Circle({
-      radius: 100,
-      left: 300,
-      top: 100,
-      fill: 'yellow',
-      angle: 45,
-      selectable: true
-    }));
-
-    canvas.add(new fabric.Text("sample for Vlad and Benjamin", {
-      fontFamily: "Georgia",
-      top: 200,
-      left: 300,
-    }));
-  }
-  this.setData = function(data) {
-    this.data = data;
-  }
-
-  this.setData(example_object);
-
-  this.render = function() {
-    // adding image
-    drawImages(() => {
-      drawGradient();
-      console.log(images);
-      console.log(gradient);
-      showStack();
-      canvas.add(new fabric.IText('hello world', { left: 100, top: 100 }));
-    });
-
-
-
-    function showStack(){
-      showGradient();
-      showImages();
-
-      setMoveable();
-
-      function showImages(){
-        let length = images.length;
-        let list = document.getElementById("item-list");
-        for(i=--length;i>=0;i--){
-
-          let image = document.createElement("li");
-          let text = "Image"+(3-i);
-          elements.text = images[i];
-          image.textContent = text;
-          image.setAttribute("item",text);
-
-
-          list.appendChild(image);
-          console.log(image);
-        }
-      }
-      function showGradient(){
-        let _gradient = document.createElement("li");
-        _gradient.textContent = "Gradient";
-        _gradient.setAttribute("item","gradient");
-        elements.gradient = gradient;
-
-        document.getElementById("item-list").appendChild(_gradient);
-      }
-      function setMoveable(){
-        var sorted = $( "#item-list" ).sortable({
-      update: function(event, ui){
-        // serial = $('#sortable').sortable("serialize", { key: "itemorder" });
-        console.log(ui);
-        // console.log(event);
-      }
-    });
-      }
+    let linaear_gradient = {
+        "a": "52",
+        "t": "linear",
+        "color": [[0.9073303937911987, 0.5577841401100159, 0.952155351638794], [0.697922945022583, 0.5685657262802124, 0.7589753270149231]],
+        "fraction": [0, 0.5]
     };
 
+    let radial_gradient = {
+        gradient: {
+            t: "radial",
+            color: [
+                [
+                    0.22056595981121063,
+                    0.23860955238342285,
+                    0.047768693417310715
+                ],
+                [
+                    0.5584452152252197,
+                    0.8967934250831604,
+                    0.5914113521575928
+                ]
+            ],
+            fraction: [
+                "0",
+                "1"
+            ]
+        },
+    };
 
-    //drawing images
-    function drawImages(callback) {
-      let _images = own.data.Dom.images;
+    if (!obj)
+        this.data = example_object;
 
-      let imageLength = _images.length;
-      for (let i = --imageLength; i >= 0; i--) {
-        let image = _images[i];
-        fabric.Image.fromURL(image.src, function(oImg) {
-          // oImg.selectable = false;
-          canvas.add(oImg);
-          images.push(oImg);
-          if (i === 0) {
-            callback();
-          }
+
+    this.fromJSON = function (data) {
+        let json;
+        if (typeof data === "string")
+            json = JSON.parse(data);
+        else
+            json = data;
+        canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true});
+        console.log("render from JSON");
+        canvas.loadFromJSON(json.fabricJson, () => {
+            stackTexts = json.layers;
+            fillElements();
+            renderTextStack();
+            setMoveable();
+            if (obj)
+                this.updateCanvas(obj);
         });
-      }
-      // adding image
-      let fabricImage;
-    }
-    //adding gradient
-    function drawGradient() {
-      // console.log(this.data);
-      let grad = own.data.gradient;
-      let image = images[images.length - 1];
-      let rect = new fabric.Rect({
-        top: 0,
-        left: 0,
-        width: image.width,
-        height: image.height,
-        opacity: 0.7
 
-      });
-      gradient = rect;
-      final_coords = convertAngle(grad);
-      console.log(final_coords);
-      rect.setGradient('fill', {
-        x1: 0,
-        y1: 0,
-        x2: final_coords.width,
-        y2: final_coords.height,
-        colorStops: (function() {
-          colors = [];
-          steps = [];
-          result = {};
-          // return {0.25:"black",0.5:"white",0.75:"black",1:"white"}
-          grad.color.forEach((color) => {
-            colors.push(converToRgb(color));
-          });
-          grad.fraction.forEach((fraction) => {
-            steps.push(fraction);
-          });
-          // steps.shift();
-          // steps.push(1);
+        function fillElements() {
+            let length = json.layers.length;
+            let objects = canvas.getObjects();
+            // console.log(objects);
+            for (let i = 0, j = length - 1; i < length; i++, j--) {
+                elements[json.layers[i]] = objects[j];
+            }
+            let keys = Object.keys(elements);
+            for (let i = 0; i < length; i++) {
+                let element = elements[keys[i]];
+                let key = keys[i];
+                saveElement(element, key);
+            }
 
-          if (steps.length != colors.length) {
-            console.log(steps);
-            console.log(colors);
-            throw "bad json, colors and fraction has different amount of elements";
-          }
-          steps.forEach((step, index) => {
-            result[step] = colors[index];
-          });
-          console.log(result);
-          return result;
-        }())
-      });
+            function saveElement(element, key) {
+                switch (key) {
+                    case "Image1":
+                    case "Image2":
+                    case "Image3":
+                        let index = key.substr(5);
+                        images[index] = element;
+                        break;
+                    case "h1":
+                    case "h2":
+                    case "h3":
+                    case "p":
+                        texts[key] = element;
+                        break;
+                    case "gradient":
+                        gradient = element;
+                        console.log(gradient);
+                        break;
+                }
+            }
 
-      function convertAngle(gradient) {
-        //convert to degree
-        let rad = gradient.angle;
-        // let rad = 80 * Math.PI / 180;
-        let width = Math.abs(Math.tan(rad)) * image.height;
-        let coef = 1 + Math.abs(Math.tan(rad)) * 0.2;
-        console.log(coef);
-
-
-        let final_height1;
-        let final_width1;
-
-        final_width1 = image.width;
-        final_height1 = image.height / width * image.width;
-
-        if (image.width > width) {
-          console.log("first case");
-          return {
-            width: width * coef,
-            height: image.height * coef,
-            // offset: fabricImage.height*coef
-          }
-        } else {
-          console.log("second case");
-          return {
-            width: final_width1,
-            height: final_height1,
-            offset: 0
-          }
-        }
-      }
-
-      function converToRgb(arr) {
-        let result = "rgb(";
-        for (let i = 0; i < arr.length; i++) {
-          result = result + Math.floor(arr[i] * 256);
-          if (i < arr.length - 1)
-            result = result + ",";
+            // console.log(elements);
         }
 
-        result = result + ")";
-        return result;
-      }
-      canvas.add(rect);
+
+        function renderTextStack() {
+            let length = json.layers.length;
+            let list = document.getElementById("item-list");
+
+            for (let i = 0; i < length; i++) {
+                let text = document.createElement("li");
+                let describe_text = json.layers[i];
+                // stackTexts.push(describe_text);
+                text.textContent = describe_text;
+                text.setAttribute("item", describe_text);
+                list.appendChild(text);
+            }
+        }
+    };
+    this.testJSON = function () {
+        this.fromJSON(example_json);
+        console.log("done");
+    };
+    this.toSVG = function () {
+        console.log(stackTexts);
+        let rawSVG = canvas.toSVG();
+        rawSVG = rawSVG.replace(/&[^(quot;)]/g, "&amp;");
+        // console.log(rawSVG);
+        let parser = new DOMParser();
+        let svg = parser.parseFromString(rawSVG, "image/svg+xml");
+
+        //insert ids to text tags
+        let textKeys = Object.keys(texts);
+        let sortedTexts = [];
+        stackTexts.map((value) => {
+            if (textKeys.indexOf(value) >= 0) {
+                sortedTexts.push(value);
+            }
+        });
+        let domTexts = svg.getElementsByTagName("text");
+        let domTextsLength = domTexts.length;
+        for (let i = 0; i < domTextsLength; i++) {
+            domTexts.item(i).setAttribute("id", sortedTexts[domTextsLength - i - 1]);
+        }
+        //insert ids to images
+        let domImages = svg.getElementsByTagName("image");
+        console.log(domImages);
+        let listImages = stackTexts.filter((item) => {
+            // console.log(item);
+            if (item.indexOf("Image") >= 0) {
+                console.log(item);
+                return true;
+            }
+            return false;
+        });
+        console.log(stackTexts);
+        let listImagesLength = listImages.length;
+        for (let i = 0; i < listImagesLength; i++) {
+            domImages.item(i).setAttribute("id", listImages[listImagesLength - 1 - i]);
+        }
+
+
+        setFonts();
+
+        let finalSVG = new XMLSerializer().serializeToString(svg);
+        finalSVG = finalSVG.replace(/SVGID_[0-9]*/g, "SVGID_0");
+        return finalSVG;
+
+        function setFonts() {
+            let defs = svg.getElementsByTagName("defs")[0];
+            let style = svg.createElement("style");
+            style.setAttribute("type", "text/css");
+            style.setAttribute("id", "fontStyles");
+            let output = fonts.map(data => {
+                let font;
+                if (typeof data === "string")
+                    font = JSON.parse(data);
+                else
+                    font = data;
+                return `@font-face {
+font-family: '${font.family}';
+font-style: ${font.variants};
+font-weight: ${font.weight};
+src: url(${font.url.woff2}) format('woff2');
+}\n`;
+            });
+            style.textContent = output.join(" ");
+            console.log(style.textContent);
+            defs.appendChild(style);
+        }
+    };
+    this.toJSON = function () {
+        let json = canvas.toJSON();
+        let layers = stackTexts;
+        return JSON.stringify({
+            fabricJson: json,
+            layers: layers
+        });
+    };
+    this.setData = function (data) {
+        this.data = data;
+    };
+    this.setFonts = function (inputFonts) {
+        fonts = inputFonts;
+    };
+    this.getObjects = function () {
+        return canvas.getObjects();
+    };
+    this.getElements = function () {
+        return elements;
     }
-  }
+
+    this.changeLayerPosition = function(key,position){
+
+        let array = canvas.getObjects();
+        let length = array.length;
+        let object = elements[key];
+        let oldIndex = array.indexOf(object);
+        if(object) {
+            let currentPosition = length - 1 - oldIndex;
+            let moveTo = length - 1 - position;
+            // console.log(currentPosition);
+            object.moveTo(moveTo);
+            let item = $(`#${key}`);
+            console.log(item);
+            if(position>0) {
+                let index = currentPosition>position?-1:0;
+                console.log(index);
+                let prevElement = $(`#${stackTexts[position+index]}`);
+                console.log(prevElement);
+                item.insertAfter(prevElement);
+
+            }else{
+                let nextElement = $(`#${stackTexts[position]}`);
+                console.log(nextElement);
+                item.insertBefore(nextElement);
+            }
+            stackTexts.splice(currentPosition, 1);
+            stackTexts.splice(position, 0, key);
+            console.log(stackTexts)
+
+
+            //     stackTexts.splice(oldIndex, 1);
+            //     stackTexts.splice(newIndex, 0, key);
+        }
+    },
+        this.render = function () {
+            canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true, });
+            // adding image
+            drawImages(() => {
+                drawGradient(own.data.gradient);
+                drawText();
+                showStack();
+                this.refresh();
+
+                this.changeLayerPosition("p",7);
+                this.changeLayerPosition("h3",7);
+
+                // canvas.add(new fabric.IText('hello world', { left: width/2, top: height/2 }));
+            });
+
+            function drawText() {
+                //draw p
+                let source_p = own.data.Dom.p;
+                let p = new fabric.IText('it is "p" text', {left: width / 2, top: height / 2});
+                p.setColor(hsl2rgb(source_p.color.color));
+
+                p.left = p.left - p.width / 2;
+                p.top = p.top - p.top / 2;
+
+                canvas.add(p);
+                texts.p = p;
+                elements.p = p;
+
+                // draw h1
+                let source_h1 = own.data.Dom.h1;
+                let h1 = new fabric.IText(own.data.domain.name, {
+                    left: width / 2,
+                    top: 400,
+                    fontSize: 180
+                });
+                h1.setColor(hsl2rgb(source_h1.color.color));
+                h1.left = h1.left - h1.width / 2;
+                h1.top = h1.top - h1.top / 2;
+                if (source_h1.font) {
+                    h1.fontFamily = source_h1.font.family;
+                    h1.fontWeight = source_h1.font.weight;
+                }
+                canvas.add(h1);
+                texts.h1 = h1;
+                elements.h1 = h1;
+
+                // draw h2
+                let source_h2 = own.data.Dom.h2;
+                let h2 = new fabric.IText('Hi, my name is', {
+                    left: width / 2,
+                    top: 320,
+                    fontSize:60
+                });
+                h2.setColor(hsl2rgb(source_h2.color.color));
+
+                h2.left = h2.left - h2.width / 2;
+                h2.top = h2.top - h2.top / 2;
+                if (source_h2.font) {
+
+                    h2.fontFamily = source_h2.font.family;
+                    h2.fontWeight = source_h2.font.weight;
+                }
+                canvas.add(h2);
+                texts.h2 = h2;
+                elements.h2 = h2;
+
+                // draw h3
+                let source_h3 = own.data.Dom.h3;
+                let h3 = new fabric.IText('it is "h3" text', {
+                    left: width / 2,
+                    top: height / 2,
+                });
+                h3.setColor(hsl2rgb(source_h3.color.color));
+
+                h3.left = h3.left - h3.width / 2;
+                h3.top = h3.top - h3.top / 2;
+                if (source_h3.font) {
+                    h3.fontFamily = source_h3.font.family;
+                    h3.fontWeight = source_h3.font.weight;
+                }
+                canvas.add(h3);
+                texts.h3 = h3;
+                elements.h3 = h3;
+
+            }
+
+            //drawing images
+            function drawImages(callback) {
+                let _images = own.data.Dom.images;
+
+                let imageLength = _images.length;
+                loadAllImagesSych(_images);
+
+                function loadAllImagesSych(_images) {
+                    imageLength = _images.length - 1;
+                    loadImage(imageLength);
+
+                    function loadImage(index) {
+                        fabric.Image.fromURL(_images[index].src, function (oImg) {
+                            canvas.add(oImg);
+                            let old_width = oImg.width;
+                            oImg.scaleToWidth(width);
+                            // oImg.setHeight((oImg.height / old_width) * width);
+                            oImg.noScaleCache= false;
+                            images[imageLength - index] = oImg;
+
+                            if (index == 0) {
+                                callback();
+                            } else {
+                                loadImage(index - 1);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+    this.refresh = function () {
+        canvas.renderAll();
+        setTimeout(() => {
+            Object.keys(texts).forEach(function (key) {
+                let item = texts[key];
+                item.scaleX = item.scaleX + 0.00001;
+                item.scaleY = item.scaleY + 0.00001;
+                // item._charWidthsCache = { };
+                item._forceClearCache  = true;
+                // item.setCoords();
+            });
+            // fabric.util.clearFabricFontCache("Atomic Age");
+            if(obj.Dom.h1.font) {
+                let font = obj.Dom.h1.font.family;
+                fabric.util.clearFabricFontCache(font);
+            }
+            if(obj.Dom.h2.font) {
+                let font = obj.Dom.h2.font.family;
+                fabric.util.clearFabricFontCache(font);
+            }
+            if(obj.Dom.h3.font) {
+                let font = obj.Dom.h3.font.family;
+                fabric.util.clearFabricFontCache(font);
+            }
+            if(obj.Dom.p.font) {
+                let font = obj.Dom.p.font.family;
+                fabric.util.clearFabricFontCache(font);
+            }
+            canvas.renderAll();
+
+        }, 1000)
+    };
+
+    this.updateCanvas = function (data) {
+        if (Object.keys(elements).length != 0) {
+            let keys = Object.keys(elements);
+            let length = keys.length;
+            for (let i = 0; i < length; i++) {
+                let element = elements[keys[i]];
+                let key = keys[i];
+                updateElement(key, element);
+            }
+            this.refresh();
+
+            function updateElement(key, element) {
+                let elemSource;
+                let baseSource;
+                switch (key) {
+                    case "Image1":
+                    case "Image2":
+                    case "Image3":
+                        let id = key.substr(5);
+                        console.log(id);
+                        let width = elements[key].width;
+                        let height = elements[key].height;
+                        elements[key].setSrc(data.Dom.images[id - 1].src, () => {
+                            elements[key].height = height;
+                            elements[key].width = width;
+                            own.refresh();
+                        });
+                        break;
+                    case "h1":
+                    case "h2":
+                    case "h3":
+                    case "p":
+                        console.log(key);
+                        elemSource = data.Dom[key];
+                        baseSource = data.Dom.global;
+                        if (elemSource.font) {
+                            element.fontFamily = elemSource.font.family;
+                            element.fontWeight = elemSource.font.weight;
+                        } else {
+                            element.fontFamily = baseSource.font.family;
+                            element.fontWeight = baseSource.font.weight;
+                        }
+                        if(elemSource.text)
+                            element.text = elemSource.text;
+                        element.setColor(hsl2rgb(elemSource.color.color));
+
+
+                        if(key === "h1"&&!elemSource.text)
+                            element.text = data.domain.name;
+                        break;
+
+                    case "gradient":
+                        drawGradient(data.gradient);
+                        break;
+                }
+            }
+        }
+    }
+
+    function showStack() {
+        $("#item-list").empty();
+        showText();
+        showGradient();
+        showImages();
+
+        setMoveable();
+
+        function showText() {
+            let keys = Object.keys(texts);
+            let length = keys.length;
+            let list = document.getElementById("item-list");
+            for (let i = length - 1; i >= 0; i--) {
+                let text = document.createElement("li");
+                let describe_text = keys[i];
+                stackTexts.push(describe_text);
+                text.textContent = describe_text;
+                text.setAttribute("item", describe_text);
+                text.setAttribute("id", describe_text);
+                list.appendChild(text);
+            }
+        }
+
+        function showImages() {
+            let length = images.length;
+            let list = document.getElementById("item-list");
+            for (let i = --length; i >= 0; i--) {
+
+                let image = document.createElement("li");
+                let text = "Image" + (3 - i);
+                stackTexts.push(text);
+                image.textContent = text;
+                image.setAttribute("item", text);
+                image.setAttribute("id", text);
+                list.appendChild(image);
+                elements[text] = images[i];
+
+            }
+        }
+
+        function showGradient() {
+            let _gradient = document.createElement("li");
+            _gradient.textContent = "gradient";
+            _gradient.setAttribute("item", "gradient");
+            _gradient.setAttribute("id", "gradient");
+            elements.gradient = gradient;
+            stackTexts.push("gradient");
+
+
+            document.getElementById("item-list").appendChild(_gradient);
+        }
+    }
+
+    function setMoveable() {
+        var sorted = $("#item-list").sortable({
+            update: function (event, ui) {
+                let item = ui.item[0];
+                let newIndex = $(item).index();
+                let key = item.getAttribute("item");
+                let object = elements[key];
+
+                let length = Object.keys(elements).length;
+                let oldIndex = stackTexts.indexOf(key);
+                let moveTo = length - 1 - newIndex;
+                object.moveTo(moveTo);
+                stackTexts.splice(oldIndex, 1);
+                stackTexts.splice(newIndex, 0, key);
+
+                console.log(stackTexts);
+            }
+        });
+        $("#item-list li").dblclick(function (event) {
+            let item = event.target.getAttribute("item");
+            let object = elements[item];
+            canvas.setActiveObject(object);
+
+        });
+    }
+
+    $(document).keyup(function (e) {
+        if (e.keyCode == 27) {
+            if (canvas) {
+                console.log("pressed esc");
+                canvas.deactivateAll().renderAll();
+            }
+        }
+    });
+
+    this.getAngleParams = function () {
+        let finalData = {};
+        let self = this;
+        for (let i = 0; i <= 360; i++) {
+            setTimeout(() => {
+                example_object.gradient.a = i;
+                self.render();
+                setTimeout(() => {
+
+                    let parser = new DOMParser();
+                    let svg = parser.parseFromString(canvas.toSVG(), "image/svg+xml");
+                    console.log(`iteration ${i}`);
+                    let gradient = svg.getElementsByTagName("linearGradient")[0];
+                    // console.log(canvas.toSVG())
+                    finalData[i] = {};
+                    finalData[i]["x1"] = gradient.getAttribute('x1');
+                    finalData[i]["y1"] = gradient.getAttribute('y1');
+                    finalData[i]["x2"] = gradient.getAttribute('x2');
+                    finalData[i]["y2"] = gradient.getAttribute('y2');
+                    gradient = null;
+                    svg = null;
+                    parser = null;
+
+                    console.log(finalData);
+                }, 200);
+            }, i * 300 + 300);
+        }
+        console.log(finalData);
+    };
+
+    function hsl2rgb(hsl) {
+        if(~hsl.indexOf("hsl")) {
+            console.log(hsl);
+            let str = hsl.substring(4);
+            str = str.substring(0, str.length - 2);
+            let arr = str.split(",");
+            let h = Number.parseInt(arr[0]);
+            let s = Number.parseInt(arr[1]);
+            let l = Number.parseInt(arr[2]);
+
+            var r, g, b, m, c, x
+
+            if (!isFinite(h)) h = 0
+            if (!isFinite(s)) s = 0
+            if (!isFinite(l)) l = 0
+
+            h /= 60
+            if (h < 0) h = 6 - (-h % 6)
+            h %= 6
+
+            s = Math.max(0, Math.min(1, s / 100))
+            l = Math.max(0, Math.min(1, l / 100))
+
+            c = (1 - Math.abs((2 * l) - 1)) * s
+            x = c * (1 - Math.abs((h % 2) - 1))
+
+            if (h < 1) {
+                r = c
+                g = x
+                b = 0
+            } else if (h < 2) {
+                r = x
+                g = c
+                b = 0
+            } else if (h < 3) {
+                r = 0
+                g = c
+                b = x
+            } else if (h < 4) {
+                r = 0
+                g = x
+                b = c
+            } else if (h < 5) {
+                r = x
+                g = 0
+                b = c
+            } else {
+                r = c
+                g = 0
+                b = x
+            }
+
+            m = l - c / 2
+            r = Math.round((r + m) * 255)
+            g = Math.round((g + m) * 255)
+            b = Math.round((b + m) * 255)
+
+            return `rgb(${r},${g},${b})`;
+        }else
+            return hsl;
+    }
+
+    function drawGradient(gradientData) {
+        let grad = gradientData;
+        let image = images[images.length - 1];
+        let document_canvas = document.getElementById(canvas_id);
+        let canvas_height = Number.parseInt(document_canvas.getAttribute("height"));
+        let canvas_width = Number.parseInt(document_canvas.getAttribute("width"));
+        if (!gradient) {
+            gradient = new fabric.Rect({
+                top: 0,
+                left: 0,
+                width: canvas_width,
+                height: canvas_height,
+                opacity: 0.7
+            });
+            canvas.add(gradient);
+        }
+        if (grad.t == "radial") {
+            gradient.height = gradient.width;
+            console.log(`gradient height = ${gradient.height}`);
+            console.log(`gradient width = ${gradient.width}`);
+            console.log(image);
+            gradient.top = -(gradient.height - canvas_height) / 2;
+        }
+        let final_coords = convertAngle(grad);
+        console.log(final_coords);
+        if (grad.t == "linear") {
+
+            gradient.setGradient('fill', {
+                type: grad.t,
+                x1: final_coords.x1,
+                y1: final_coords.y1,
+                x2: final_coords.x2,
+                y2: final_coords.y2,
+
+                colorStops: getColorStops()
+            });
+            console.log(gradient);
+
+        }
+        else if (grad.t == "radial")
+            gradient.setGradient('fill', {
+                type: grad.t,
+                x1: canvas_width / 2,
+                y1: canvas_width / 2,
+                x2: canvas_width / 2,
+                y2: canvas_width / 2,
+                r1: canvas_width / 2,
+                r2: 0,
+
+                colorStops: getColorStops()
+            });
+
+        function getColorStops() {
+            colors = [];
+            steps = [];
+            result = {};
+            // return {0.25:"black",0.5:"white",0.75:"black",1:"white"}
+            grad.color.forEach((color) => {
+                colors.push(converToRgb(color));
+            });
+            grad.fraction.forEach((fraction) => {
+                steps.push(fraction);
+            });
+            // steps.shift();
+            // steps.push(1);
+
+            if (steps.length != colors.length) {
+                throw "bad json, colors and fraction has different amount of elements";
+            }
+            steps.forEach((step, index) => {
+                result[step] = colors[index];
+            });
+            console.log(result);
+            return result;
+        }
+
+        function convertAngle(gradient) {
+
+            // function angleToPoints(degrees) {
+            //     let angle = degrees / 180 * Math.PI;
+            //     let segment = Math.floor(angle / Math.PI * 2) + 2;
+            //     let diagonal =  (1/2 * segment + 1/4) * Math.PI;
+            //     let op = Math.cos(Math.abs(diagonal - angle)) * Math.sqrt(2);
+            //     let x = op * Math.cos(angle);
+            //     let y = op * Math.sin(angle);
+            //     return {
+            //         x1: x < 0 ? 1 : 0,
+            //         y1: y < 0 ? 1 : 0,
+            //         x2: x >= 0 ? x : x + 1,
+            //         y2: y >= 0 ? y : y + 1
+            //     };
+            // }
+            // let result = angleToPoints(gradient.a);
+            // return{
+            //     x1:result.x1*canvas_width,
+            //     x2:result.x2*canvas_width,
+            //     y1:result.y1*canvas_height,
+            //     y2:result.y2*canvas_height,
+            // };
+            //convert to degree
+            let angle = gradient.a ? gradient.a : 0;
+            let rad = angle * Math.PI / 180;
+            // let rad = 15 * Math.PI / 180;
+            let width = Math.abs(Math.tan(rad)) * canvas_height;
+            let coef = 1 + Math.abs(Math.tan(rad)) * 0.2;
+
+
+            let final_height1;
+            let final_width1;
+
+            final_width1 = canvas_width;
+            final_height1 = canvas_height / width * canvas_width;
+
+            if (canvas_width > width) {
+                return {
+                    x1: 0,
+                    y1: 0,
+                    x2: width * coef,
+                    y2: canvas_height * coef,
+                    // offset: fabriccanvas_height*coef
+                }
+            } else {
+                return {
+                    x1: 0,
+                    y1: 0,
+                    x2: final_width1,
+                    y2: final_height1,
+                    offset: 0
+                }
+            }
+        }
+
+        function converToRgb(arr) {
+            let result = "rgb(";
+            for (let i = 0; i < arr.length; i++) {
+                result = result + Math.floor(arr[i] * 256);
+                if (i < arr.length - 1)
+                    result = result + ",";
+            }
+            result = result + ")";
+            return result;
+        }
+    }
 }

@@ -381,5 +381,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
   // console.log(fabric.toSVG());
 fabr = fabric;
 
+    //change "r" for radial gradients
+
+    // let radialGradients = svg.getElementsByTagName("radialGradient");
+    // for(let i=0;i<radialGradients.length;i++){
+    //     let gradient = radialGradients.item(i);
+    //     if(gradient.hasAttribute("r"))
+    //         gradient.setAttribute("r",Math.abs(gradient.getAttribute("r")));
+    // }
+
 });
 var fabr;

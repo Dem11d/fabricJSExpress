@@ -48,12 +48,14 @@ FabricObject = function (canvas_id, obj = null) {
 
 
     this.fromJSON = function (data) {
+        gradient = null;
         let json;
         if (typeof data === "string")
             json = JSON.parse(data);
         else
             json = data;
-        canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true});
+        if(!canvas)
+            canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true, });
         console.log("render from JSON");
         canvas.loadFromJSON(json.fabricJson, () => {
             stackTexts = json.layers;
@@ -94,7 +96,6 @@ FabricObject = function (canvas_id, obj = null) {
                         break;
                     case "gradient":
                         gradient = element;
-                        console.log(gradient);
                         break;
                 }
             }
@@ -119,10 +120,8 @@ FabricObject = function (canvas_id, obj = null) {
     };
     this.testJSON = function () {
         this.fromJSON(example_json);
-        console.log("done");
     };
     this.toSVG = function () {
-        console.log(stackTexts);
         let rawSVG = canvas.toSVG();
         rawSVG = rawSVG.replace(/&[^(quot;)]/g, "&amp;");
         // console.log(rawSVG);
@@ -144,19 +143,25 @@ FabricObject = function (canvas_id, obj = null) {
         }
         //insert ids to images
         let domImages = svg.getElementsByTagName("image");
-        console.log(domImages);
         let listImages = stackTexts.filter((item) => {
             // console.log(item);
             if (item.indexOf("Image") >= 0) {
-                console.log(item);
                 return true;
             }
             return false;
         });
-        console.log(stackTexts);
+
         let listImagesLength = listImages.length;
         for (let i = 0; i < listImagesLength; i++) {
             domImages.item(i).setAttribute("id", listImages[listImagesLength - 1 - i]);
+        }
+        //change "r" for radial gradients
+
+        let radialGradients = svg.getElementsByTagName("radialGradient");
+        for(let i=0;i<radialGradients.length;i++){
+            let gradient = radialGradients.item(i);
+            if(gradient.hasAttribute("r"))
+                gradient.setAttribute("r",Math.abs(gradient.getAttribute("r")));
         }
 
 
@@ -178,14 +183,13 @@ FabricObject = function (canvas_id, obj = null) {
                 else
                     font = data;
                 return `@font-face {
-font-family: '${font.family}';
+font-family: '${font.family.replace(" ","_")}';
 font-style: ${font.variants};
 font-weight: ${font.weight};
 src: url(${font.url.woff2}) format('woff2');
 }\n`;
             });
             style.textContent = output.join(" ");
-            console.log(style.textContent);
             defs.appendChild(style);
         }
     };
@@ -222,22 +226,17 @@ src: url(${font.url.woff2}) format('woff2');
             // console.log(currentPosition);
             object.moveTo(moveTo);
             let item = $(`#${key}`);
-            console.log(item);
             if(position>0) {
                 let index = currentPosition>position?-1:0;
-                console.log(index);
                 let prevElement = $(`#${stackTexts[position+index]}`);
-                console.log(prevElement);
                 item.insertAfter(prevElement);
 
             }else{
                 let nextElement = $(`#${stackTexts[position]}`);
-                console.log(nextElement);
                 item.insertBefore(nextElement);
             }
             stackTexts.splice(currentPosition, 1);
             stackTexts.splice(position, 0, key);
-            console.log(stackTexts)
 
 
             //     stackTexts.splice(oldIndex, 1);
@@ -245,7 +244,9 @@ src: url(${font.url.woff2}) format('woff2');
         }
     },
         this.render = function () {
-            canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true, });
+            gradient = null;
+            if(!canvas)
+                canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true, });
             // adding image
             drawImages(() => {
                 drawGradient(own.data.gradient);
@@ -253,8 +254,10 @@ src: url(${font.url.woff2}) format('woff2');
                 showStack();
                 this.refresh();
 
-                this.changeLayerPosition("p",7);
-                this.changeLayerPosition("h3",7);
+                this.changeLayerPosition("h1",0);
+                this.changeLayerPosition("h2",1);
+                this.changeLayerPosition("h3",2);
+                this.changeLayerPosition("p",3);
 
                 // canvas.add(new fabric.IText('hello world', { left: width/2, top: height/2 }));
             });
@@ -264,12 +267,16 @@ src: url(${font.url.woff2}) format('woff2');
                 let source_p = own.data.Dom.p;
                 let p = new fabric.IText('it is "p" text', {left: width / 2, top: height / 2});
                 p.setColor(hsl2rgb(source_p.color.color));
-
                 p.left = p.left - p.width / 2;
                 p.top = p.top - p.top / 2;
-
+                // p.fontFamily = "arial";
                 canvas.add(p);
                 texts.p = p;
+                if (source_p.font) {
+                    p.fontFamily = source_p.font.family.replace(" ","_");
+                    p.fontWeight = source_p.font.weight;
+                    p.fontStyle =   source_p.font.style;
+                }
                 elements.p = p;
 
                 // draw h1
@@ -283,8 +290,9 @@ src: url(${font.url.woff2}) format('woff2');
                 h1.left = h1.left - h1.width / 2;
                 h1.top = h1.top - h1.top / 2;
                 if (source_h1.font) {
-                    h1.fontFamily = source_h1.font.family;
+                    h1.fontFamily = source_h1.font.family.replace(" ","_");
                     h1.fontWeight = source_h1.font.weight;
+                    h1.fontStyle = source_h1.font.style;
                 }
                 canvas.add(h1);
                 texts.h1 = h1;
@@ -303,8 +311,9 @@ src: url(${font.url.woff2}) format('woff2');
                 h2.top = h2.top - h2.top / 2;
                 if (source_h2.font) {
 
-                    h2.fontFamily = source_h2.font.family;
+                    h2.fontFamily = source_h2.font.family.replace(" ","_");
                     h2.fontWeight = source_h2.font.weight;
+                    h2.fontStyle = source_h2.font.style;
                 }
                 canvas.add(h2);
                 texts.h2 = h2;
@@ -321,8 +330,9 @@ src: url(${font.url.woff2}) format('woff2');
                 h3.left = h3.left - h3.width / 2;
                 h3.top = h3.top - h3.top / 2;
                 if (source_h3.font) {
-                    h3.fontFamily = source_h3.font.family;
+                    h3.fontFamily = source_h3.font.family.replace(" ","_");
                     h3.fontWeight = source_h3.font.weight;
+                    h3.fontStyle = source_h3.font.style;
                 }
                 canvas.add(h3);
                 texts.h3 = h3;
@@ -374,25 +384,40 @@ src: url(${font.url.woff2}) format('woff2');
             });
             // fabric.util.clearFabricFontCache("Atomic Age");
             if(obj.Dom.h1.font) {
-                let font = obj.Dom.h1.font.family;
+                let font = obj.Dom.h1.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
             if(obj.Dom.h2.font) {
-                let font = obj.Dom.h2.font.family;
+                let font = obj.Dom.h2.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
             if(obj.Dom.h3.font) {
-                let font = obj.Dom.h3.font.family;
+                let font = obj.Dom.h3.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
             if(obj.Dom.p.font) {
-                let font = obj.Dom.p.font.family;
+                let font = obj.Dom.p.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
             canvas.renderAll();
 
         }, 1000)
     };
+
+    this.clear = function () {
+        canvas.clear();
+        let images = [];
+        let gradient = null;
+        let texts = {};
+        let elements = {};
+        let stackTexts = [];
+        let fonts= null;
+
+
+        $("#item-list").empty()
+
+    };
+
 
     this.updateCanvas = function (data) {
         if (Object.keys(elements).length != 0) {
@@ -413,7 +438,6 @@ src: url(${font.url.woff2}) format('woff2');
                     case "Image2":
                     case "Image3":
                         let id = key.substr(5);
-                        console.log(id);
                         let width = elements[key].width;
                         let height = elements[key].height;
                         elements[key].setSrc(data.Dom.images[id - 1].src, () => {
@@ -426,15 +450,16 @@ src: url(${font.url.woff2}) format('woff2');
                     case "h2":
                     case "h3":
                     case "p":
-                        console.log(key);
                         elemSource = data.Dom[key];
                         baseSource = data.Dom.global;
                         if (elemSource.font) {
-                            element.fontFamily = elemSource.font.family;
+                            element.fontFamily = elemSource.font.family.replace(" ","_");
                             element.fontWeight = elemSource.font.weight;
+                            element.fontStyle = elemSource.font.style;
                         } else {
-                            element.fontFamily = baseSource.font.family;
+                            element.fontFamily = baseSource.font.family.replace(" ","_");
                             element.fontWeight = baseSource.font.weight;
+                            element.fontStyle = baseSource.font.style;
                         }
                         if(elemSource.text)
                             element.text = elemSource.text;
@@ -521,7 +546,6 @@ src: url(${font.url.woff2}) format('woff2');
                 stackTexts.splice(oldIndex, 1);
                 stackTexts.splice(newIndex, 0, key);
 
-                console.log(stackTexts);
             }
         });
         $("#item-list li").dblclick(function (event) {
@@ -532,14 +556,6 @@ src: url(${font.url.woff2}) format('woff2');
         });
     }
 
-    $(document).keyup(function (e) {
-        if (e.keyCode == 27) {
-            if (canvas) {
-                console.log("pressed esc");
-                canvas.deactivateAll().renderAll();
-            }
-        }
-    });
 
     this.getAngleParams = function () {
         let finalData = {};
@@ -552,7 +568,6 @@ src: url(${font.url.woff2}) format('woff2');
 
                     let parser = new DOMParser();
                     let svg = parser.parseFromString(canvas.toSVG(), "image/svg+xml");
-                    console.log(`iteration ${i}`);
                     let gradient = svg.getElementsByTagName("linearGradient")[0];
                     // console.log(canvas.toSVG())
                     finalData[i] = {};
@@ -564,16 +579,13 @@ src: url(${font.url.woff2}) format('woff2');
                     svg = null;
                     parser = null;
 
-                    console.log(finalData);
                 }, 200);
             }, i * 300 + 300);
         }
-        console.log(finalData);
     };
 
     function hsl2rgb(hsl) {
         if(~hsl.indexOf("hsl")) {
-            console.log(hsl);
             let str = hsl.substring(4);
             str = str.substring(0, str.length - 2);
             let arr = str.split(",");
@@ -651,9 +663,6 @@ src: url(${font.url.woff2}) format('woff2');
         }
         if (grad.t == "radial") {
             gradient.height = gradient.width;
-            console.log(`gradient height = ${gradient.height}`);
-            console.log(`gradient width = ${gradient.width}`);
-            console.log(image);
             gradient.top = -(gradient.height - canvas_height) / 2;
         }
         let final_coords = convertAngle(grad);
@@ -669,7 +678,6 @@ src: url(${font.url.woff2}) format('woff2');
 
                 colorStops: getColorStops()
             });
-            console.log(gradient);
 
         }
         else if (grad.t == "radial")
@@ -705,7 +713,6 @@ src: url(${font.url.woff2}) format('woff2');
             steps.forEach((step, index) => {
                 result[step] = colors[index];
             });
-            console.log(result);
             return result;
         }
 

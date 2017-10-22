@@ -55,15 +55,15 @@ FabricObject = function (canvas_id, obj = null) {
         else
             json = data;
         if(!canvas)
-            canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true, });
+            canvas = new fabric.Canvas(canvas_id, {preserveObjectStacking: true,  });
         console.log("render from JSON");
         canvas.loadFromJSON(json.fabricJson, () => {
             stackTexts = json.layers;
             fillElements();
             renderTextStack();
             setMoveable();
-            if (obj)
-                this.updateCanvas(obj);
+
+            own.updateCanvas(own.data);
         });
 
         function fillElements() {
@@ -380,7 +380,6 @@ src: url(${font.url.woff2}) format('woff2');
                 item.scaleY = item.scaleY + 0.00001;
                 // item._charWidthsCache = { };
                 item._forceClearCache  = true;
-                // item.setCoords();
             });
             // fabric.util.clearFabricFontCache("Atomic Age");
             if(obj.Dom.h1.font) {
@@ -453,9 +452,9 @@ src: url(${font.url.woff2}) format('woff2');
                         elemSource = data.Dom[key];
                         baseSource = data.Dom.global;
                         if (elemSource.font) {
-                            element.fontFamily = elemSource.font.family.replace(" ","_");
-                            element.fontWeight = elemSource.font.weight;
-                            element.fontStyle = elemSource.font.style;
+                            element.setFontFamily(elemSource.font.family.replace(" ","_"));
+                            element.setFontWeight(elemSource.font.weight);
+                            element.setFontStyle(elemSource.font.style);
                         } else {
                             element.fontFamily = baseSource.font.family.replace(" ","_");
                             element.fontWeight = baseSource.font.weight;
@@ -463,7 +462,7 @@ src: url(${font.url.woff2}) format('woff2');
                         }
                         if(elemSource.text)
                             element.text = elemSource.text;
-                        element.setColor(hsl2rgb(elemSource.color.color));
+                        element.fill = hsl2rgb(elemSource.color.color);
 
 
                         if(key === "h1"&&!elemSource.text)

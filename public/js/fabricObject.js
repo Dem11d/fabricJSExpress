@@ -382,20 +382,20 @@ src: url(${font.url.woff2}) format('woff2');
                 item._forceClearCache  = true;
             });
             // fabric.util.clearFabricFontCache("Atomic Age");
-            if(obj.Dom.h1.font) {
-                let font = obj.Dom.h1.font.family.replace(" ","_");
+            if(own.data.Dom.h1.font) {
+                let font = own.data.Dom.h1.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
-            if(obj.Dom.h2.font) {
-                let font = obj.Dom.h2.font.family.replace(" ","_");
+            if(own.data.Dom.h2.font) {
+                let font = own.data.Dom.h2.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
-            if(obj.Dom.h3.font) {
-                let font = obj.Dom.h3.font.family.replace(" ","_");
+            if(own.data.Dom.h3.font) {
+                let font = own.data.Dom.h3.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
-            if(obj.Dom.p.font) {
-                let font = obj.Dom.p.font.family.replace(" ","_");
+            if(own.data.Dom.p.font) {
+                let font = own.data.Dom.p.font.family.replace(" ","_");
                 fabric.util.clearFabricFontCache(font);
             }
             canvas.renderAll();
